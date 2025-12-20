@@ -1,8 +1,8 @@
-#convert dictionary data into documents/text for RAG ingestion,returns list
+from langchain_core.documents import Document
 from app.data.symptom_data import SYMPTOM_DB
 
 def build_documents():
-    documents = []
+    docs = []
 
     for symptom, info in SYMPTOM_DB.items():
         text = (
@@ -11,6 +11,15 @@ def build_documents():
             f"Recommended doctor: {info['doctor']}. "
             f"Self care tips: {', '.join(info['self_care'])}."
         )
-        documents.append(text)
 
-    return documents
+        doc = Document(
+            page_content=text,
+            metadata={
+                "symptom": symptom,
+                "doctor": info["doctor"]
+            }
+        )
+
+        docs.append(doc)
+
+    return docs
