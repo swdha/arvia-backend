@@ -111,10 +111,13 @@ def find_nearby_doctors(specialization: str, latitude: float, longitude: float, 
             # Extract hospital information
             if "suggestedLocations" in data:
                 for place in data["suggestedLocations"][:5]:  # Top 5 closest
+                    distance_value = place.get("distance", "N/A")
+                    distance_str = f"{distance_value}m" if isinstance(distance_value, (int, float)) else str(distance_value)
+                    
                     doctors.append({
                         "name": place.get("placeName", "Unknown Hospital"),
                         "address": place.get("placeAddress", "Address not available"),
-                        "distance": place.get("distance", "N/A"),
+                        "distance": distance_str,
                         "specialization": specialization  # What user needs
                     })
             
