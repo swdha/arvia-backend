@@ -4,10 +4,10 @@ from langchain_core.output_parsers import StrOutputParser
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
-    temperature=0.1
+    temperature=0.1   # low randomness for consistent outputs
 )
 
-# Teach Gemini to extract symptoms and mark vague inputs
+# Teaching Gemini to extract symptoms and mark vague inputs
 prompt = ChatPromptTemplate.from_template("""
 Extract medical symptoms from user input.
 
@@ -43,7 +43,7 @@ def refine_query(user_input: str) -> dict:
             "original_query": user_input,
             "needs_clarification": is_vague
         }
-    except Exception as e:
+    except Exception as e:         # ensures system does not crash on errors
         print(f"Error: {e}")
         return {
             "refined_query": user_input,
@@ -56,11 +56,11 @@ def extract_symptoms_structured(user_input: str) -> dict:
     refined = refine_query(user_input)
     text = refined["refined_query"]
     
-    # Simple parsing
+    # Simple parsing   (extracting text)
     symptoms = []
     duration = None
     severity = None
-    
+    # extract duration and severity if mentioned
     if "duration:" in text:
         parts = text.split("duration:")
         symptoms_part = parts[0]
@@ -72,6 +72,7 @@ def extract_symptoms_structured(user_input: str) -> dict:
         idx = text.index("severity:") + len("severity:")
         severity = text[idx:].strip()
     
+    # for extracting symptoms list
     symptoms = [s.strip() for s in symptoms_part.split(",") if s.strip()]
     
     return {

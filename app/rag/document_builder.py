@@ -2,6 +2,7 @@
 from langchain_core.documents import Document
 from app.data.symptom_data import SYMPTOM_DB
 
+# converts to langchain Document format
 def build_documents():
     docs = []
 

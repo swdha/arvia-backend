@@ -11,7 +11,7 @@ embeddings = GoogleGenerativeAIEmbeddings(
 documents = build_documents()
 
 # Create FAISS vector store
-# This: 1) converts docs to embeddings, 2) builds searchable index
+# This: 1) converts docs to embeddings, 2) builds searchable index which faiss stores
 vector_store = FAISS.from_documents(
     documents=documents,
     embedding=embeddings

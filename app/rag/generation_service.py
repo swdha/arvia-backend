@@ -38,12 +38,13 @@ def format_docs(docs):
 # RAG chain: retrieve → format → prompt → generate → parse
 rag_chain = (
     {
-        "context": retriever | format_docs,  # Get docs and format them
+        "context": retriever | format_docs,  # Get docs and format them i.e. combine top 3 docs into one string
         "question": RunnablePassthrough()     # Pass query through unchanged
     }
     | prompt              # Fill template with context and question
     | llm                 # Send to Gemini
     | StrOutputParser()   # Extract string from response
+    # langchain expression language lcel
 )
 
 def generate_answer(user_query: str, retrieved_docs: list = None):
