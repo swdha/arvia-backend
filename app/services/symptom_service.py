@@ -1,4 +1,4 @@
-from app.rag.generation_service import generate_answer
+from app.rag.generation_service import generate_answer, extract_remedies
 from app.agents.query_refiner import refine_query
 from app.agents.severity_assessor import assess_severity
 from app.agents.doctor_finder import determine_specialization, find_nearby_doctors
@@ -40,6 +40,9 @@ def analyze_symptoms(user_input: str, user_location: dict = None):
             if result["success"]:
                 doctors_list = result["doctors"]
     
+    # NEW: Extract remedies for MILD cases
+    remedies_list = []
+    
     # Generate RAG answer based on severity
     if assessment["severity"] == "SEVERE":
         answer = generate_answer(refined["refined_query"])
@@ -51,7 +54,9 @@ def analyze_symptoms(user_input: str, user_location: dict = None):
             answer += f"\n\nRecommended: {recommended_spec}"
         
     else:
+        # MILD case - extract remedies from vector DB
         answer = generate_answer(refined["refined_query"])
+        remedies_list = extract_remedies(refined["refined_query"])
     
     # Return everything
     return {
@@ -64,5 +69,6 @@ def analyze_symptoms(user_input: str, user_location: dict = None):
         "severity_reasoning": assessment["reasoning"],
         "needs_doctor": assessment["needs_doctor"],
         "recommended_specialization": recommended_spec,
-        "doctors_nearby": doctors_list
+        "doctors_nearby": doctors_list,
+        "remedies": remedies_list  # NEW: Add remedies to response
     }

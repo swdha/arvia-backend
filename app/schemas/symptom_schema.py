@@ -55,3 +55,6 @@ class SymptomResponse(BaseModel):
     # Agent-3: Doctor Finder
     recommended_specialization: Optional[str] = None  # What type of doctor they need
     doctors_nearby: Optional[List[DoctorInfo]] = []  # List of nearby hospitals
+    
+    # NEW: Remedies field for MILD cases
+    remedies: Optional[List[str]] = []  # Home remedies when doctor not needed
